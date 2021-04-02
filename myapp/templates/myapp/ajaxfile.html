@@ -1,0 +1,148 @@
+<script>
+    $(document).on("change", "#myselect" , function(){
+        var selected = $(this).val();
+        output="";
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        console.log("----------->",selected);
+        if(selected=="select product")
+        {
+            // console("---------> select product",selected);
+            output+="<option value='select product' selected disabled>--Select product--</option>";
+            $("#mytb").html(output);	
+        }
+        else
+        {
+            console.log("selected value----------->",selected);
+            userData = {
+                selected: selected,
+                csrfmiddlewaretoken: csr,
+            };
+            $.ajax({
+                method:"POST",
+                data:  userData,
+                url : "{% url 'get-price' %}",
+                
+                success: function(response)
+                        {
+                        
+                            console.log("clickkkkk");
+                            console.log("===>",response.context.data)
+                            output+="<input type='text' id='price' value='"+response.context.data+"' readonly />";
+                            $("#tbprice").html(output);               
+                        }
+            });
+        }
+    });
+
+    $(document).on("change", "#qtyvalue" , function(){
+        var selected = $(this).val();
+        var price= $('#price').val();
+        console.log("-----------> price value on qty",price);
+        output="";
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        console.log("----------->",selected);
+    
+            console.log("selected value----------->",selected);
+            userData = {
+                selected: selected,
+                csrfmiddlewaretoken: csr,
+                price:price,
+            };
+            $.ajax({
+                method:"POST",
+                data:  userData,
+                url : "{% url 'get-total' %}",
+                
+                success: function(response)
+                        {
+                            console.log("clickkkkk");
+                            console.log("===>",response.context.data)
+                            output+="<input type='text' id='total' name='totalprice' value='"+response.context.data+"' readonly />";
+                            $("#tbtotal").html(output);               
+                        }
+            });
+        }
+    );
+
+
+    $("#btnsave").click(function(){
+
+        output="";
+        let customer_id= $("#customers").val();
+        let product_id= $("#myselect").val();
+        let price= $("#price").val();
+        let qtyvalue= $("#qtyvalue").val();
+        let total=$("#total").val();
+
+
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+
+            console.log("btnsave click----------->");
+            userData = {
+                csrfmiddlewaretoken: csr,
+                customer_id:customer_id,
+                product_id:product_id,
+                price:price,
+                qtyvalue:qtyvalue,
+                total:total,
+            };
+            $.ajax({
+                method:"POST",
+                data:  userData,
+                url : "{% url 'add-order' %}",
+
+                success: function(response)
+                        {
+
+                            console.log("clickkkkk");
+                            console.log("===>",response.context.data)
+                            output+=response.context.data;
+                            $("#resultid").html(output);
+                        }
+            });
+
+    });
+
+
+    $("#btnsearch").click(function(){
+        output="";
+
+        let searchname=$('#searchname').val();
+        console.log("search btn clicked",searchname);
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        userData = {
+            searchname: searchname,
+            csrfmiddlewaretoken: csr,
+        };
+        $.ajax(
+            {
+                url: "{% url 'search-value' %}",
+                method: "POST",
+                data: userData,
+                success: function (response) {
+                    console.log("---> response", response.context.data);
+                    x = response.context.data; // getting all data from response
+                    var c= response.context.cdata;
+                    console.log("----->c value ",c);
+                    //console.log("----->x value",x);
+                    var html_append = "";
+                    //data = JSON.parse(c);
+                    //data = toArray(c);
+                    //console.log(c[0]);
+                    c.forEach( function(element){
+                        console.log(element.first_name);
+                        html_append += "<h1>"+element.first_name+"</h1>";
+                    });
+
+                            //console.log(html_append);
+                        $("#fnamevalue").html(html_append);
+                        //$("form")[0].reset();
+                }
+            },
+        );
+
+    });
+
+
+
+</script>   

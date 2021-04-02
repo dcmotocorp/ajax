@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <style>
+        tr,td
+        {
+            padding:20px;
+            
+        }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    </head>
+    <body>
+        <h1>ADD ORDER</h1>
+        <form method="POST">
+            {% csrf_token %} 
+            <table id="mytb">
+                <tr>
+                    <td>Customer</td>
+                    <p id="resultid"></p>
+                    <td>
+
+                        <select name="customers" id="customers" required>
+                            <option value="select customer" disabled selected>--Select customer--</option>
+                            {% for i in context.c_all %}
+                            <option value="{{i.id}}">{{i.first_name}}</option>
+                            {% endfor %}
+                          </select>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>Product</td>                    
+                    <td>
+                        <select name="product" id="myselect" required>
+                            <option value="select product" disabled selected>--Select product--</option>
+                            {% for i in context.p_all %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                            {% endfor %}
+                          </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Price</td>                    
+                    <td id="tbprice"></td>
+                </tr>
+                <tr>
+                    <td>Qty</td>                    
+                    <td><input type="number" id="qtyvalue" name="qty" placeholder="Enter qty " required/></td>
+                </tr>
+                <tr>
+                    <td>Total Price</td>                    
+                    <td id="tbtotal"><label>-</label></td>
+                </tr>
+                
+                <tr>
+                    <td><input type="button" id="btnsave" value="Place Order"/></td>
+                    <td><input type="reset" value="Cancel"/></td>
+                </tr>
+            </table>
+         </form>
+    </body>
+    {% include 'myapp/ajaxfile.html' %}
+</html>

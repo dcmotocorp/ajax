@@ -1,0 +1,55 @@
+<html>
+<head>
+    <style>
+        table
+        {
+            border:2px solid black;
+            border-collapse:collapse;
+        }
+        tr,td,th
+        {
+            border:2px solid black;
+            padding:20px;
+        }
+
+    </style>
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <h1>Orders</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text"  id="searchname" name="search" placeholder="Search value"/>
+        <input type="button" id="btnsearch" name="btn" value="Search" />
+        <input type="button" name="Addorder" value="Add order" />
+    </form>
+    <h5 id="msg"></h5>
+    <Table id="tbody">
+        <tr>
+            <th>Customers</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th colspan="2">Action</th>
+        </tr>
+        <tbody id="tbodyid">
+        {% for i in context.data %}
+
+        <tr>
+            <input type="hidden" id="orderid" value="{{i.id}}"/>
+            <td id="fnamevalue">{{i.customer_id.first_name}}</td>
+            <td>{{i.product_id.name}}</td>
+            <td>{{i.qty}}</td>
+            <td>{{i.unit_price}}</td>
+            <td>{{i.total_price}}</td>
+             <td><a href="{% url 'update-order' uk=i.id %}">Edit</a> </td>
+            <td><a href="{% url 'del-order' pk=i.id %}">Delete</a> </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </Table>
+    <div id="test"></div>
+    </body>
+        {% include 'myapp/ajaxfile.html' %}
+</html>
